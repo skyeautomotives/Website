@@ -11,7 +11,7 @@
   --muted-light: #cdbcb5;
   --accent: #e5342a;
   --accent-2: #ff6b4d;
-  --accent-text: #c02419; /* darker red for small text on light bg — #e5342a only hits ~4.15:1, this hits ~5.7:1 (WCAG AA needs 4.5:1) */
+  --accent-text: #c02419; /* darker red for small text on light bg: #e5342a only hits ~4.15:1, this hits ~5.7:1 (WCAG AA needs 4.5:1) */
   --accent-soft: rgba(229, 52, 42, 0.09);
   --line: rgba(32, 24, 21, 0.10);
   --line-dark: rgba(255, 255, 255, 0.12);
@@ -80,7 +80,7 @@ h3 { font-size: 22px; margin-bottom: 8px; }
   margin-bottom: 14px;
 }
 .eyebrow.center { display: block; }
-.eyebrow.light { color: var(--accent-2); }
+.oil-copy .eyebrow.light { color: var(--accent-2); }
 .center { text-align: center; display: block; }
 
 .text-gradient {
@@ -154,11 +154,11 @@ h3 { font-size: 22px; margin-bottom: 8px; }
   background: var(--line); border-radius: 2px;
 }
 .rail-progress {
-  position: absolute; top: 70px; left: 50%; width: 2px; height: 0;
-  transform: translateX(-50%);
+  position: absolute; top: 70px; bottom: 60px; left: 50%; width: 2px;
+  transform: translateX(-50%) scaleY(0);
+  transform-origin: top;
   background: linear-gradient(var(--accent), var(--accent-2));
   border-radius: 2px;
-  transition: height .12s linear;
   box-shadow: 0 0 10px rgba(229,52,42,.5);
 }
 .rail-checkpoints {
@@ -397,7 +397,7 @@ h3 { font-size: 22px; margin-bottom: 8px; }
 
 /* ===================== COMPANY ACCORDION ===================== */
 /* Plain text brand navigation, matching how real parts distributors (RockAuto,
-   etc.) actually list makes — no logo, no boxed card. Collapsed rows sit
+   etc.) actually list makes: no logo, no boxed card. Collapsed rows sit
    compactly, several per row; an open one spans full width for its vehicles. */
 .company-list {
   display: grid; grid-template-columns: repeat(3, 1fr);
@@ -550,6 +550,7 @@ h3 { font-size: 22px; margin-bottom: 8px; }
 }
 .catalog-note strong { color: var(--accent-text); }
 .catalog-note-cta { text-align: center; margin-top: 16px; }
+.catalog-note-cta .btn { white-space: normal; text-align: center; }
 
 @media (max-width: 980px) {
   .vehicle-grid { grid-template-columns: repeat(2,1fr); }

@@ -10,7 +10,7 @@ const onScroll = () => {
   if (window.scrollY > 40) navbar.classList.add("scrolled");
   else navbar.classList.remove("scrolled");
 };
-window.addEventListener("scroll", onScroll);
+window.addEventListener("scroll", onScroll, { passive: true });
 onScroll();
 
 // ===================== MOBILE MENU =====================
@@ -65,17 +65,28 @@ const sectionObserver = new IntersectionObserver((entries) => {
 sections.forEach(sec => sectionObserver.observe(sec));
 
 // ===================== SCROLL RAIL PROGRESS =====================
+// Throttled to once per animation frame (raw "scroll" events can fire many
+// times per frame), and driven via `transform: scaleY()` rather than
+// `height`: height is a layout property and forces a reflow on every
+// update, scaleY is compositor-only and doesn't.
 const railTrack = document.querySelector(".rail-track");
 const railProgress = document.getElementById("rail-progress");
 if (railTrack && railProgress) {
+  let railTicking = false;
   const updateRailProgress = () => {
-    const trackHeight = railTrack.offsetHeight;
     const scrollable = document.documentElement.scrollHeight - window.innerHeight;
     const fraction = scrollable > 0 ? Math.min(Math.max(window.scrollY / scrollable, 0), 1) : 0;
-    railProgress.style.height = `${fraction * trackHeight}px`;
+    railProgress.style.transform = `translateX(-50%) scaleY(${fraction})`;
+    railTicking = false;
   };
-  window.addEventListener("scroll", updateRailProgress);
-  window.addEventListener("resize", updateRailProgress);
+  const requestRailUpdate = () => {
+    if (!railTicking) {
+      railTicking = true;
+      requestAnimationFrame(updateRailProgress);
+    }
+  };
+  window.addEventListener("scroll", requestRailUpdate, { passive: true });
+  window.addEventListener("resize", requestRailUpdate);
   updateRailProgress();
 }
 

@@ -1,7 +1,7 @@
 // ===================== PRODUCTS PAGE: TABS, ACCORDION, SEARCH, SORT =====================
 // Progressive enhancement: every tab, company, vehicle, and part-type card is real,
 // static, crawlable HTML already. This script only adds the tab switching, accordion
-// toggle, and live filtering/sorting on top — if it fails to run, both tab panels
+// toggle, and live filtering/sorting on top: if it fails to run, both tab panels
 // just stay visible and every card stays open, so the page still fully works.
 (function () {
   const filtersBox = document.getElementById("vehicle-filters");
@@ -153,7 +153,7 @@
     let resumeTimer = null;
     let lastTime = null;
     // Track position ourselves in full float precision rather than reading
-    // scrollLeft back each frame — the browser can round/snap that property,
+    // scrollLeft back each frame: the browser can round/snap that property,
     // which would silently eat the sub-pixel-per-frame deltas this slow a
     // scroll produces and stall it entirely.
     let currentPos = quickCatTrack.scrollLeft;
