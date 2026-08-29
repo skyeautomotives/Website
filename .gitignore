@@ -1,0 +1,21 @@
+# Real business inventory data — contains pricing, quantity and rate figures
+# that must never be published publicly.
+Inventory data.xls
+
+# Separate gear/accessories concept page — its catalog hotlinks product
+# photos and listings from a competitor (66Bhp) and isn't cleared to publish.
+motovian-homepage.html
+
+# Local pre-visual-upgrade snapshot — kept on disk as a rollback reference,
+# not meant to be permanent repo history.
+backup_pre_visual_upgrade_2026-08-29/
+
+# Local AI-assistant tooling (design-skill scripts/data), not website source
+.agents/
+skills-lock.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
