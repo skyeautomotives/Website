@@ -241,11 +241,6 @@
     "Heavy / Commercial": ["Tata Motors", "Ashok Leyland", "Mahindra", "Eicher", "Force Motors", "BharatBenz", "Other"]
   };
 
-  const FALLBACK_PRODUCT = {
-    "2-Wheeler": "Motovian Motorcycle Oil 4T (10W-30 or 20W-40)",
-    "4-Wheeler": "Motovian Motor Oil HDX (15W-40)",
-    "Heavy / Commercial": "Motovian Motor Oil HDX (15W-40)"
-  };
 
   // ---- result enrichment: real, sourced context, not fabricated Motovian
   // pricing (which isn't public). Viscosity meaning is general SAE fact;
@@ -275,18 +270,6 @@
     "10W-30": "₹565 to ₹600 per litre, based on official OEM store pricing (Hero MotoCorp, Suzuki Motorcycle India).",
     "20W-40": "₹437 to ₹545 per litre, based on official OEM store pricing (Suzuki Motorcycle India, Hero MotoCorp).",
     "10W-40": "₹628 to ₹887 per litre, based on official OEM store pricing (Suzuki Motorcycle India), semi-synthetic to full-synthetic."
-  };
-  const FALLBACK_FACTS = {
-    "2-Wheeler": [
-      { label: "Description", value: "Motovian 4T oil comes in two grades, 10W-30 and 20W-40, both suited to motorcycles and scooters." },
-      { label: "Typical Price", value: PRICE_FACTS["10W-30"] }
-    ],
-    "4-Wheeler": [
-      { label: "Description", value: "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, suitable for petrol, diesel, LPG and CNG engines." }
-    ],
-    "Heavy / Commercial": [
-      { label: "Description", value: "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, commonly used in diesel commercial vehicles." }
-    ]
   };
 
   function viscosityFact(gradeStr) {
@@ -329,28 +312,44 @@
     segment: document.getElementById("finder-step-segment"),
     company: document.getElementById("finder-step-company"),
     model: document.getElementById("finder-step-model"),
+    enquiry: document.getElementById("finder-step-enquiry"),
     result: document.getElementById("finder-step-result")
   };
   const progressRail = document.getElementById("finder-progress");
   const progressSteps = progressRail.querySelectorAll(".finder-progress-step");
   const companyTiles = document.getElementById("finder-company-tiles");
-  const modelLabel = document.getElementById("finder-model-label");
-  const modelKnownBox = document.getElementById("finder-model-known");
   const modelTiles = document.getElementById("finder-model-tiles");
-  const modelUnknownBox = document.getElementById("finder-model-unknown");
-  const fuelRow = document.getElementById("finder-fuel-row");
-  const modelTextInput = document.getElementById("finder-model-text");
-  const unknownContinueBtn = document.getElementById("finder-unknown-continue");
   const resetBtn = document.getElementById("finder-reset");
   const resultVehicle = document.getElementById("finder-result-vehicle");
   const resultGrade = document.getElementById("finder-result-grade");
   const resultNote = document.getElementById("finder-result-note");
   const resultMatch = document.getElementById("finder-result-match");
   const resultFacts = document.getElementById("finder-result-facts");
+  const resultEnquireBtn = document.getElementById("finder-result-enquire");
   const waBtn = document.getElementById("finder-wa-btn");
 
-  let answers = { segment: "", company: "", fuel: "", model: "" };
+  const enquiryForm = document.getElementById("finder-enquiry");
+  const enquiryDone = document.getElementById("enq-done");
+  const enquiryFoot = document.getElementById("enq-foot");
+  const enquiryBack = document.getElementById("enq-back");
+  const enquiryAgain = document.getElementById("enq-again");
+  const enquirySubmit = document.getElementById("enq-submit");
+  const enquiryError = document.getElementById("enq-error");
+  const enquiryFuel = document.getElementById("enq-fuel");
+  const enqName = document.getElementById("enq-name");
+  const enqWa = document.getElementById("enq-wa");
+  const enqBrand = document.getElementById("enq-brand");
+  const enqModel = document.getElementById("enq-model");
+
+  // FormSubmit's AJAX endpoint relays to the same inbox as the dealer form on
+  // index.html, but keeps the visitor inside the finder instead of bouncing
+  // them to a third-party thank-you page.
+  const ENQUIRY_ENDPOINT = "https://formsubmit.co/ajax/skyeautomotives@gmail.com";
+  const WA_TEAM = "919744060485";
+
+  let answers = { segment: "", company: "", model: "" };
   let researchedEntry = null;
+  let enquiryReturnTo = "company";
 
   const STEP_ORDER = ["segment", "company", "model"];
 
@@ -377,9 +376,10 @@
       syncTileFade(box);
     });
 
-    // The rail is a question counter, so it has no place on the answer.
-    progressRail.hidden = key === "result";
+    // The rail counts the three questions, so it has no place on the answer
+    // or on the enquiry form that sits outside that path.
     const at = STEP_ORDER.indexOf(key);
+    progressRail.hidden = at === -1;
     progressSteps.forEach((el, i) => {
       el.classList.toggle("is-current", i === at);
       el.classList.toggle("is-done", at > -1 && i < at);
@@ -405,14 +405,24 @@
     return btn;
   }
 
+  function getResearchedModels(segment, company) {
+    return (VEHICLE_DATA[segment] && VEHICLE_DATA[segment][company]) || [];
+  }
+
   function populateCompanies(segment) {
     companyTiles.innerHTML = "";
-    companyTiles.scrollTop = 0;
     (COMPANIES[segment] || []).forEach((name) => {
       const isOther = name === "Other";
-      const tile = makeTile(isOther ? "Another brand" : name, null, isOther);
+      const tile = makeTile(isOther ? "My brand isn't listed" : name, null, isOther);
       tile.addEventListener("click", () => {
-        answers.company = name;
+        answers.company = isOther ? "" : name;
+        answers.model = "";
+        // No verified models for this brand (or no brand at all): go to the
+        // enquiry form rather than an empty model step.
+        if (isOther || !getResearchedModels(segment, name).length) {
+          openEnquiry("company");
+          return;
+        }
         fillModelStep();
         showStep("model");
       });
@@ -420,43 +430,25 @@
     });
   }
 
-  function getResearchedModels(segment, company) {
-    return (VEHICLE_DATA[segment] && VEHICLE_DATA[segment][company]) || [];
-  }
-
   function fillModelStep() {
     const models = getResearchedModels(answers.segment, answers.company);
-    fuelRow.hidden = answers.segment === "2-Wheeler";
-    if (models.length) {
-      modelLabel.textContent = "Which model?";
-      modelKnownBox.hidden = false;
-      modelUnknownBox.hidden = true;
-      modelTiles.innerHTML = "";
-      modelTiles.scrollTop = 0;
-      models.forEach((entry) => {
-        // The grade rides on the tile, so the answer is half-visible before
-        // the visitor even commits to a model.
-        const tile = makeTile(entry.model, entry.grade, false);
-        tile.addEventListener("click", () => {
-          answers.model = entry.model;
-          showResearchedResult(entry);
-        });
-        modelTiles.appendChild(tile);
+    modelTiles.innerHTML = "";
+    models.forEach((entry) => {
+      // The grade rides on the tile, so the answer is half-visible before
+      // the visitor even commits to a model.
+      const tile = makeTile(entry.model, entry.grade, false);
+      tile.addEventListener("click", () => {
+        answers.model = entry.model;
+        showResearchedResult(entry);
       });
-      const other = makeTile("My model isn't listed", null, true);
-      other.addEventListener("click", switchToUnknownModel);
-      modelTiles.appendChild(other);
-    } else {
-      switchToUnknownModel();
-    }
-  }
-
-  function switchToUnknownModel() {
-    modelLabel.textContent = "Tell us a bit more";
-    modelKnownBox.hidden = true;
-    modelUnknownBox.hidden = false;
-    modelTextInput.value = "";
-    fuelRow.hidden = answers.segment === "2-Wheeler";
+      modelTiles.appendChild(tile);
+    });
+    const other = makeTile("My model isn't listed", null, true);
+    other.addEventListener("click", () => {
+      answers.model = "";
+      openEnquiry("model");
+    });
+    modelTiles.appendChild(other);
   }
 
   function renderFacts(facts) {
@@ -488,43 +480,120 @@
     showStep("result");
   }
 
-  function showFallbackResult() {
-    researchedEntry = null;
-    const product = FALLBACK_PRODUCT[answers.segment] || "";
-    resultVehicle.textContent = "Starting point";
-    resultGrade.textContent = product;
-    resultNote.textContent = "We don't have a verified spec for this exact vehicle yet. Our team will confirm the right grade for you.";
-    resultNote.hidden = false;
-    resultMatch.textContent = "";
-    renderFacts(FALLBACK_FACTS[answers.segment] || []);
-    updateWaLink();
-    showStep("result");
-  }
-
   function updateWaLink() {
     let message = "Hi Motovian, I have a " + answers.segment + " - " + answers.company;
     if (answers.model) message += " (" + answers.model + ")";
-    if (answers.fuel) message += ", fuel: " + answers.fuel;
     message += ".";
     if (researchedEntry) {
       message += " Your finder showed " + researchedEntry.grade + ".";
     }
     message += " I'd like help finding the right oil.";
-    waBtn.href = "https://wa.me/919744060485?text=" + encodeURIComponent(message);
+    waBtn.href = "https://wa.me/" + WA_TEAM + "?text=" + encodeURIComponent(message);
   }
 
+  // ---- enquiry form ----
+  function setEnquiryState(state) {
+    const sending = state === "sending";
+    const done = state === "done";
+    enquiryForm.hidden = done;
+    enquiryDone.hidden = !done;
+    enquiryFoot.hidden = done;
+    enquirySubmit.disabled = sending;
+    enquirySubmit.textContent = sending ? "Sending…" : "Send To Our Team";
+    if (state !== "error") enquiryError.hidden = true;
+  }
+
+  function openEnquiry(returnTo) {
+    enquiryReturnTo = returnTo;
+    setEnquiryState("idle");
+    // Carry forward whatever the visitor has already told us, so the form
+    // never asks a question they just answered.
+    enqBrand.value = answers.company;
+    enqModel.value = answers.model;
+    document.getElementById("enq-segment").value = answers.segment;
+    enquiryFuel.hidden = answers.segment === "2-Wheeler";
+    if (enquiryFuel.hidden) {
+      enquiryFuel.querySelectorAll("input").forEach((r) => { r.checked = false; });
+    }
+    showStep("enquiry");
+    const firstEmpty = [enqName, enqWa, enqBrand, enqModel].find((el) => !el.value.trim());
+    if (firstEmpty) firstEmpty.focus({ preventScroll: true });
+  }
+
+  // Accepts "97440 60485", "+91 97440 60485", "919744060485" and returns the
+  // bare 10-digit number.
+  function whatsAppDigits(raw) {
+    const digits = raw.replace(/\D/g, "");
+    return digits.length === 12 && digits.startsWith("91") ? digits.slice(2) : digits;
+  }
+
+  function enquiryWaFallback(data) {
+    const lines = [
+      "Hi Motovian, I need help finding the right oil.",
+      "Name: " + data.Name,
+      "Vehicle: " + [answers.segment, data.Brand, data.Model].filter(Boolean).join(", ")
+    ];
+    if (data.Fuel) lines.push("Fuel: " + data.Fuel);
+    return "https://wa.me/" + WA_TEAM + "?text=" + encodeURIComponent(lines.join("\n"));
+  }
+
+  enqWa.addEventListener("input", () => enqWa.setCustomValidity(""));
+
+  enquiryForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const wa = whatsAppDigits(enqWa.value);
+    enqWa.setCustomValidity(/^[6-9]\d{9}$/.test(wa) ? "" : "Enter a 10-digit WhatsApp number, e.g. 97440 60485");
+    if (!enquiryForm.reportValidity()) return;
+
+    const data = Object.fromEntries(new FormData(enquiryForm).entries());
+    if (data._honey) return;
+    delete data._honey;
+    data["WhatsApp Number"] = "+91 " + wa;
+    data._subject = "Oil Finder enquiry: " + [data.Brand, data.Model].filter(Boolean).join(" ") +
+      (answers.segment ? " (" + answers.segment + ")" : "");
+
+    setEnquiryState("sending");
+    fetch(ENQUIRY_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(data)
+    })
+      .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
+      .then(({ ok, body }) => {
+        if (!ok || String(body.success) !== "true") throw new Error(body.message || "Send failed");
+        document.getElementById("enq-done-title").textContent = "Thanks, " + data.Name.trim().split(/\s+/)[0];
+        document.getElementById("enq-done-sub").textContent =
+          "Our team will send the right grade for your " + [data.Brand, data.Model].filter(Boolean).join(" ") +
+          " to +91 " + wa + " on WhatsApp.";
+        setEnquiryState("done");
+      })
+      .catch(() => {
+        setEnquiryState("error");
+        enquiryError.textContent = "Couldn't send just now. ";
+        const link = document.createElement("a");
+        link.href = enquiryWaFallback(data);
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Message us on WhatsApp instead";
+        enquiryError.append(link, ".");
+        enquiryError.hidden = false;
+      });
+  });
+
+  enquiryBack.addEventListener("click", () => showStep(enquiryReturnTo));
+
   function resetFinder() {
-    answers = { segment: "", company: "", fuel: "", model: "" };
+    answers = { segment: "", company: "", model: "" };
     researchedEntry = null;
+    enquiryForm.reset();
+    setEnquiryState("idle");
     finderBox.querySelectorAll("[data-segment]").forEach((b) => b.classList.remove("active"));
-    fuelRow.querySelectorAll("[data-fuel]").forEach((b) => b.classList.remove("active"));
     showStep("segment");
   }
 
   function selectSegment(segment) {
     answers.segment = segment;
     answers.company = "";
-    answers.fuel = "";
     answers.model = "";
     finderBox.querySelectorAll("[data-segment]").forEach((b) => {
       b.classList.toggle("active", b.dataset.segment === segment);
@@ -537,23 +606,13 @@
     btn.addEventListener("click", () => selectSegment(btn.dataset.segment));
   });
 
-  unknownContinueBtn.addEventListener("click", () => {
-    answers.model = modelTextInput.value.trim();
-    showFallbackResult();
-  });
-
-  fuelRow.querySelectorAll("[data-fuel]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      answers.fuel = btn.dataset.fuel;
-      fuelRow.querySelectorAll("[data-fuel]").forEach((b) => b.classList.toggle("active", b === btn));
-    });
-  });
-
   finderBox.querySelectorAll("[data-back]").forEach((btn) => {
     btn.addEventListener("click", () => showStep(btn.dataset.back));
   });
 
   resetBtn.addEventListener("click", resetFinder);
+  enquiryAgain.addEventListener("click", resetFinder);
+  resultEnquireBtn.addEventListener("click", () => openEnquiry("result"));
 
   // ---- deep link from the Motovian hero: the visitor already answered
   // "what do you drive?" there, so skip straight past the first question

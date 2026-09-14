@@ -62,20 +62,16 @@ body { background: var(--bg); min-height: 100vh; }
 .finder-shell-intro h1 { font-size: clamp(30px, 4.5vw, 46px); margin: 10px 0 16px; }
 .finder-shell-sub { color: var(--muted); font-size: 15.5px; }
 
-/* ---- Double-bezel: an outer translucent glass shell nested around the
-   existing .finder-app card, so it reads as machined hardware rather than a
-   flat panel sitting on the background. ---- */
-.finder-bezel {
-  width: 100%; max-width: 680px; padding: 8px;
-  background: rgba(255,255,255,.03);
+/* ---- The finder is one card, not a card nested in a frame: a single
+   surface with a hairline border and a faint top highlight, so every step
+   (tiles, form, result) sits directly on it. ---- */
+.finder-shell-main .finder-app {
+  width: 100%; max-width: 640px;
+  background: linear-gradient(180deg, rgba(28,31,38,.92), rgba(22,24,29,.92));
   border: 1px solid rgba(255,255,255,.08);
-  border-radius: 36px;
-  box-shadow: 0 40px 100px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.04);
-  animation: shellFadeUp .8s var(--ease) .15s both;
-}
-.finder-bezel .finder-app {
   border-radius: 28px;
-  box-shadow: inset 0 1px 1px rgba(255,255,255,.05);
+  box-shadow: 0 40px 100px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+  animation: shellFadeUp .8s var(--ease) .15s both;
 }
 
 .finder-shell-disclaimer {
@@ -93,11 +89,10 @@ body { background: var(--bg); min-height: 100vh; }
   .finder-shell-header { padding: 16px 18px; }
   .finder-shell-brand { display: none; }
   .finder-shell-main { padding: 44px 16px 60px; }
-  .finder-bezel { padding: 6px; border-radius: 26px; }
-  .finder-bezel .finder-app { border-radius: 20px; }
+  .finder-shell-main .finder-app { border-radius: 22px; }
   .finder-orb { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .finder-shell-intro, .finder-bezel, .finder-shell-disclaimer { animation: none; }
+  .finder-shell-intro, .finder-shell-main .finder-app, .finder-shell-disclaimer { animation: none; }
 }

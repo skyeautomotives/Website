@@ -161,15 +161,6 @@
 .finder-opt svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.6; flex-shrink: 0; }
 .finder-opt:hover { border-color: var(--accent); background: rgba(46,107,255,.08); transform: translateX(4px); }
 .finder-opt.active { border-color: var(--accent); background: rgba(46,107,255,.12); }
-.finder-input-row { margin-bottom: 16px; }
-.finder-input-row input {
-  width: 100%; padding: 16px 18px; border-radius: 10px;
-  border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
-  font-size: 14.5px; font-family: var(--ff-body); transition: border-color .3s, box-shadow .3s;
-}
-.finder-input-row input:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,107,255,.18);
-}
 .finder-actions { display: flex; justify-content: center; margin-top: 20px; }
 .finder-actions .btn { width: 100%; justify-content: center; }
 .finder-step-back {
@@ -180,9 +171,63 @@
 }
 .finder-step-back:hover { color: var(--accent-text); }
 .finder-alt { text-align: center; font-size: 13px; color: var(--muted); margin-top: 18px; }
-.finder-alt a { color: var(--accent-text); font-weight: 700; }
+.finder-alt a, .finder-alt-link { color: var(--accent-text); font-weight: 700; }
+.finder-alt-link {
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: inherit; font-size: inherit; text-decoration: underline; text-underline-offset: 3px;
+}
 .finder-noscript { color: var(--muted); margin-top: 18px; }
-.finder-optional { font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: normal; }
+
+/* ---- enquiry step: for any vehicle without a verified grade. Fields sit
+   straight on the card (no inner panel), reusing the site's floating-label
+   .form-group inputs. ---- */
+.finder-enquiry-head { text-align: center; margin-bottom: 26px; }
+.finder-enquiry-title {
+  font-family: var(--ff-head); font-size: clamp(22px, 3vw, 27px); font-weight: 700;
+  color: var(--text); line-height: 1.2; margin-bottom: 8px;
+}
+.finder-enquiry-sub { font-size: 14px; color: var(--muted); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+.finder-enquiry .form-row { gap: 12px; }
+@media (max-width: 640px) {
+  .finder-enquiry .form-row { gap: 0; }
+}
+.finder-enquiry .form-group { margin-bottom: 12px; }
+.finder-honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.finder-fuel { border: 0; padding: 0; margin: 4px 0 14px; min-width: 0; }
+.finder-fuel[hidden] { display: none; }
+.finder-fuel legend {
+  font-family: var(--ff-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 9px; padding: 0;
+}
+.finder-fuel-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.finder-fuel-chip { position: relative; cursor: pointer; }
+.finder-fuel-chip input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.finder-fuel-chip span {
+  display: block; text-align: center; padding: 11px 6px; border-radius: 10px;
+  background: rgba(255,255,255,.03); border: 1px solid var(--line); color: var(--text);
+  font-size: 13px; font-weight: 600;
+  transition: border-color .25s, background .25s, color .25s;
+}
+.finder-fuel-chip:hover span { border-color: var(--accent); }
+.finder-fuel-chip input:checked + span { border-color: var(--accent); background: rgba(46,107,255,.14); color: var(--accent-text); }
+.finder-fuel-chip input:focus-visible + span { box-shadow: 0 0 0 3px rgba(46,107,255,.25); }
+
+.finder-enquiry .btn-submit { margin-top: 8px; }
+.finder-enquiry .btn-submit:disabled { opacity: .6; cursor: progress; }
+.finder-enquiry-error {
+  font-size: 13px; line-height: 1.5; color: #FF8A8A; text-align: center;
+  padding: 10px 12px; margin: 6px 0 4px; border-radius: 10px; background: rgba(255,59,59,.08);
+}
+.finder-enquiry-error a { color: var(--accent-text); font-weight: 700; text-decoration: underline; }
+
+.finder-enquiry-done { text-align: center; padding: 12px 0 6px; }
+.finder-enquiry-check {
+  display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 18px;
+  border-radius: 50%; background: var(--accent-soft); border: 1px solid rgba(0,224,255,.35);
+}
+.finder-enquiry-check svg { width: 26px; height: 26px; fill: none; stroke: var(--accent-text); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.finder-enquiry-done .btn { margin-top: 22px; }
 
 /* ---- progress rail: three numbered nodes joined by a line that fills in
    as the visitor advances. Gives the card a top edge and a sense of how
@@ -259,16 +304,13 @@
 .finder-tile-wide .finder-tile-name { font-weight: 500; color: var(--muted); font-size: 13px; }
 .finder-tile-wide:hover .finder-tile-name { color: var(--text); }
 
+.finder-step-foot[hidden] { display: none; }
 .finder-step-foot {
   display: flex; justify-content: center;
   margin-top: 22px; padding-top: 18px;
   border-top: 1px solid rgba(255,255,255,.05);
 }
 
-.finder-options-row { flex-direction: row; flex-wrap: wrap; margin-bottom: 16px; }
-.finder-opt-sm { width: auto; flex: 1 1 calc(50% - 5px); justify-content: center; padding: 12px 16px; }
-.finder-opt-sm.active { border-color: var(--accent); background: rgba(46,107,255,.12); color: var(--accent-text); }
-.finder-continue { display: flex; width: 100%; justify-content: center; }
 
 .finder-result-card { position: relative; padding-top: 38px; }
 .finder-reset-btn {
