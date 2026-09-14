@@ -9,11 +9,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=42">
+<link rel="stylesheet" href="css/style.css?v=47">
 </head>
-<body>
+<body class="has-topbar">
 
 <a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ================= MOTOVIAN TOP BANNER (visible the instant the page loads, no scroll needed) ================= -->
+<a href="motovian.html" class="motovian-topbar" aria-label="Motovian, Skye Automotives' engine oil brand">
+  <div class="motovian-topbar-track">
+    <span>NEW &middot; MOTOVIAN ENGINE OIL BY SKYE AUTOMOTIVES <i>&#9670;</i> EXPLORE THE FULL LINEUP <i>&#9670;</i> BS6 COMPLIANT, SYNTHETIC TECHNOLOGY <i>&#9670;</i> </span>
+    <span aria-hidden="true">NEW &middot; MOTOVIAN ENGINE OIL BY SKYE AUTOMOTIVES <i>&#9670;</i> EXPLORE THE FULL LINEUP <i>&#9670;</i> BS6 COMPLIANT, SYNTHETIC TECHNOLOGY <i>&#9670;</i> </span>
+  </div>
+</a>
 
 <!-- ================= SCROLL RAIL (signature element, desktop only) ================= -->
 <div id="scroll-rail" aria-hidden="true">
@@ -23,7 +31,6 @@
     <span class="rail-dot" data-target="home"></span>
     <span class="rail-dot" data-target="about"></span>
     <span class="rail-dot" data-target="products"></span>
-    <span class="rail-dot" data-target="oil-brand"></span>
     <span class="rail-dot" data-target="why-us"></span>
     <span class="rail-dot" data-target="dealers"></span>
   </div>
@@ -42,7 +49,7 @@
       <a href="#home" class="active">Home</a>
       <a href="#about">About</a>
       <a href="products.html">Products</a>
-      <a href="#oil-brand">Engine Oil</a>
+      <a href="motovian.html">Motovian</a>
       <a href="#why-us">Why Us</a>
       <a href="#dealers">Become a Dealer</a>
       <a href="#dealers">Contact</a>
@@ -84,6 +91,7 @@
         WhatsApp Us
       </a>
     </div>
+    <a href="motovian.html" class="btn btn-small btn-motovian hero-motovian-cta reveal">Discover Our Own Brand: Motovian</a>
   </div>
   <a href="#about" class="scroll-cue" aria-label="Scroll down">
     <span class="scroll-cue-text">Scroll Down</span>
@@ -183,43 +191,6 @@
     <span aria-hidden="true">GENUINE PARTS <i>&#9670;</i> FAST DISPATCH <i>&#9670;</i> TRUSTED DISTRIBUTION <i>&#9670;</i> QUALITY GUARANTEED <i>&#9670;</i></span>
   </div>
 </div>
-
-<!-- ================= FEATURED: NEW OIL BRAND ================= -->
-<section id="oil-brand" class="section oil-brand">
-  <div class="oil-bg"></div>
-  <div class="container oil-grid">
-    <div class="oil-copy">
-      <p class="eyebrow reveal light">Introducing Motovian</p>
-      <h2 class="reveal light oil-brand-name">Motovian</h2>
-      <p class="reveal light">
-        Motovian is engineered for performance, backed by the same distribution expertise that&rsquo;s kept
-        workshops running for years. BS6-compliant synthetic formulations built for cars, commercial
-        vehicles, and motorcycles alike.
-      </p>
-      <div class="oil-actions reveal">
-        <a href="#dealers" class="btn btn-primary">Become a Dealer</a>
-      </div>
-    </div>
-    <div class="oil-visual reveal">
-      <div class="oil-variant">
-        <div class="drop"></div>
-        <p>15W-40</p>
-        <span>HDX Synthetic · 3L</span>
-      </div>
-      <div class="oil-variant">
-        <div class="drop"></div>
-        <p>20W-40</p>
-        <span>4T Synthetic · 1L</span>
-      </div>
-      <div class="oil-variant">
-        <div class="drop"></div>
-        <p>10W-30</p>
-        <span>4T Synthetic · 800ML</span>
-      </div>
-    </div>
-  </div>
-  <p class="oil-footnote reveal light center">BS6 compliant. Exceeds API CI4 Plus and API SN/JASO MB standards.</p>
-</section>
 
 <!-- ================= WHY US ================= -->
 <section id="why-us" class="section why-us">
@@ -330,7 +301,7 @@
       <h4>Quick Links</h4>
       <a href="#about">About</a>
       <a href="products.html">Products</a>
-      <a href="#oil-brand">Engine Oil</a>
+      <a href="motovian.html">Motovian</a>
       <a href="#dealers">Become a Dealer</a>
     </div>
     <div>

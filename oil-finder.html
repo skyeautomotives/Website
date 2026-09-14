@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#0A0B0D" />
+<title>Oil Finder | Motovian</title>
+<meta name="description" content="Find the right Motovian engine oil for your vehicle: pick your segment, company and model to see the manufacturer-published grade, or connect with our team on WhatsApp." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css?v=47">
+<link rel="stylesheet" href="css/motovian.css?v=9">
+<link rel="stylesheet" href="css/oil-finder.css?v=2">
+</head>
+<body>
+
+<a href="#finder-main" class="skip-link">Skip to main content</a>
+
+<header class="finder-shell-header">
+  <a href="motovian.html" class="finder-back">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+    Motovian
+  </a>
+  <div class="finder-shell-brand">
+    <span class="finder-shell-logo">MOTOVIAN</span>
+    <span class="finder-shell-tag">Oil Finder</span>
+  </div>
+  <a href="index.html#dealers" class="finder-shell-help">Talk To Us</a>
+</header>
+
+<main id="finder-main" tabindex="-1" class="finder-shell-main">
+  <div class="finder-shell-bg" aria-hidden="true">
+    <span class="finder-orb finder-orb-1"></span>
+    <span class="finder-orb finder-orb-2"></span>
+  </div>
+
+  <div class="finder-shell-intro">
+    <p class="eyebrow center">Oil Finder</p>
+    <h1>Find The Right Motovian Oil</h1>
+    <p class="finder-shell-sub">
+      Tell us about your vehicle and we&rsquo;ll connect you directly with our team on WhatsApp.
+    </p>
+  </div>
+
+  <div class="finder-bezel">
+    <div class="finder-app" id="finder-box">
+      <!-- Sequential steps: each one replaces the last, so only the current
+           question (and finally, only the answer) is ever on screen. -->
+      <div class="finder-step" id="finder-step-segment">
+        <p class="finder-field-label center">Vehicle type</p>
+        <div class="finder-options">
+          <button type="button" class="finder-opt" data-segment="2-Wheeler">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5 9 10h6l3.5 7.5M9 10 7 6h3"/></svg>
+            2-Wheeler
+          </button>
+          <button type="button" class="finder-opt" data-segment="4-Wheeler">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13l2-5a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 5"/><rect x="2" y="13" width="20" height="6" rx="1.5"/><circle cx="7" cy="19" r="1.6"/><circle cx="17" cy="19" r="1.6"/></svg>
+            4-Wheeler
+          </button>
+          <button type="button" class="finder-opt" data-segment="Heavy / Commercial">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 8h11v9H2z"/><path d="M13 11h4l3 3v3h-7z"/><circle cx="6" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/></svg>
+            Heavy / Commercial
+          </button>
+        </div>
+      </div>
+
+      <div class="finder-step" id="finder-step-company" hidden>
+        <p class="finder-field-label center">Company</p>
+        <div class="finder-select-row">
+          <select id="finder-company">
+            <option value="">Select company</option>
+          </select>
+        </div>
+        <button type="button" class="finder-step-back" data-back="segment">&larr; Back</button>
+      </div>
+
+      <div class="finder-step" id="finder-step-model" hidden>
+        <p class="finder-field-label center" id="finder-model-label">Model</p>
+
+        <div id="finder-model-known">
+          <div class="finder-select-row">
+            <select id="finder-model-select">
+              <option value="">Select model</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="finder-model-unknown" hidden>
+          <div class="finder-options finder-options-row" id="finder-fuel-row">
+            <button type="button" class="finder-opt finder-opt-sm" data-fuel="Petrol">Petrol</button>
+            <button type="button" class="finder-opt finder-opt-sm" data-fuel="Diesel">Diesel</button>
+            <button type="button" class="finder-opt finder-opt-sm" data-fuel="CNG">CNG</button>
+            <button type="button" class="finder-opt finder-opt-sm" data-fuel="LPG">LPG</button>
+          </div>
+          <div class="finder-input-row">
+            <input type="text" id="finder-model-text" placeholder="Make &amp; model, e.g. Swift VXI" autocomplete="off">
+          </div>
+          <button type="button" class="btn btn-outline-light btn-small finder-continue" id="finder-unknown-continue">See Result</button>
+        </div>
+
+        <button type="button" class="finder-step-back" data-back="company">&larr; Back</button>
+      </div>
+
+      <div class="finder-step finder-step-result" id="finder-step-result" hidden>
+        <div class="finder-result-card" id="finder-result-card">
+          <p class="finder-result-vehicle" id="finder-result-vehicle"></p>
+          <p class="finder-result-grade" id="finder-result-grade"></p>
+          <p class="finder-result-note" id="finder-result-note"></p>
+          <p class="finder-result-match" id="finder-result-match"></p>
+
+          <div class="finder-result-facts" id="finder-result-facts"></div>
+
+          <div class="finder-actions">
+            <a href="#" id="finder-wa-btn" target="_blank" rel="noopener" class="btn btn-primary">
+              <svg viewBox="0 0 24 24" class="icon-wa" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-.9 1.2c-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.1 7c-.1-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.8c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.5-1.2l-.3-.2-3 .8.8-2.9-.2-.3C4 15.1 3.5 13.6 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
+              Connect on WhatsApp
+            </a>
+          </div>
+          <p class="finder-alt">Prefer a form instead? <a href="index.html#dealers">Send an enquiry</a>.</p>
+        </div>
+        <button type="button" class="finder-step-back" id="finder-reset">Start Over</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="finder-shell-disclaimer">
+    Grades are manufacturer-published starting points for common models and can vary by year and engine variant.
+    Always confirm against your owner&rsquo;s manual. Coverage is growing: not every model is listed yet.
+  </p>
+
+  <noscript>
+    <p class="finder-noscript center">WhatsApp us directly, or use the enquiry form on the Skye Automotives site, and we&rsquo;ll help you find the right oil for your vehicle.</p>
+  </noscript>
+</main>
+
+<script src="js/motovian.js?v=7"></script>
+</body>
+</html>

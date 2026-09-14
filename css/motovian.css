@@ -1,0 +1,201 @@
+/* ===================== MOTOVIAN STANDALONE PAGE ===================== */
+/* Loaded after style.css on motovian.html only: re-themes the shared design
+   system (buttons, nav, footer, forms, hero, reveal animation, WhatsApp float)
+   to Motovian's identity by overriding the CSS tokens, then patches the
+   handful of style.css rules that hardcode the red brand color instead of
+   reading a token. Palette matches the original Motovian concept page
+   (asphalt/gunmetal/volt/ignition/chrome/steel). Nothing here touches
+   index.html or products.html. */
+
+:root {
+  --bg: #0A0B0D;
+  --bg-alt: #16181D;
+  --panel: #16181D;
+  --dark: #0A0B0D;
+  --dark-2: #0A0B0D;
+  --text: #F2F4F7;
+  --muted: #8A93A3;
+  --text-light: #F2F4F7;
+  --muted-light: #8A93A3;
+  --accent: #2E6BFF;
+  --accent-2: #00E0FF;
+  --accent-text: #00E0FF;
+  --accent-soft: rgba(0, 224, 255, 0.12);
+  --line: #262A32;
+  --line-dark: #262A32;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  --shadow-dark: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- patch hardcoded red rgba() in shared rules that don't read a token ---- */
+.hero-bg {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(46,107,255,.14), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(0,224,255,.10), transparent 40%),
+    radial-gradient(circle at 50% 90%, rgba(46,107,255,.08), transparent 45%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-alt) 100%);
+}
+.shape-gear { border-color: rgba(46,107,255,.28); }
+.shape-ring { border-color: rgba(255,255,255,.10); }
+#navbar.scrolled { background: rgba(10,11,13,.88); box-shadow: 0 6px 30px rgba(0,0,0,.4); }
+.loader-ring { border-color: rgba(255,255,255,.12); border-top-color: var(--accent); }
+.btn-primary { box-shadow: 0 10px 30px rgba(46,107,255,.28); }
+.btn-primary:hover { box-shadow: 0 16px 40px rgba(46,107,255,.4); }
+.contact-item:hover { border-color: rgba(46,107,255,.35); }
+.form-group input, .form-group textarea { background: rgba(255,255,255,.04); }
+.form-group input:focus, .form-group textarea:focus {
+  border-color: var(--accent);
+  background: rgba(46,107,255,.06);
+  box-shadow: 0 0 0 3px rgba(46,107,255,.18);
+}
+
+/* ---- nav: "by Skye Automotives" sub-link back to the parent site ---- */
+.logo-group { display: flex; flex-direction: column; }
+.nav-parent-link {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-top: 2px;
+  transition: color .3s;
+}
+.nav-parent-link:hover { color: var(--accent); }
+
+/* ---- oil finder: sequential single-card steps. Each step replaces the
+   last (only the current question is ever visible), ending in one rich
+   result screen with no filters left on show. Page shell (header,
+   background, double-bezel frame) lives in oil-finder.css. ---- */
+.finder-app {
+  max-width: 620px; margin: 0 auto;
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 44px 40px;
+}
+.finder-step[hidden] { display: none; }
+.finder-step { animation: stepFadeIn .5s var(--ease) both; }
+@keyframes stepFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.finder-field-label {
+  font-family: var(--ff-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+}
+.finder-field-label.center { text-align: center; }
+.finder-options[hidden] { display: none; }
+.finder-options { display: flex; flex-direction: column; gap: 10px; }
+.finder-opt {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; padding: 14px 18px; border-radius: 14px;
+  background: rgba(255,255,255,.03); border: 1px solid var(--line); color: var(--text);
+  font-family: var(--ff-body); font-weight: 600; font-size: 14.5px; text-align: left;
+  cursor: pointer; transition: border-color .25s, background .25s, transform .25s var(--ease);
+  touch-action: manipulation;
+}
+.finder-opt svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.6; flex-shrink: 0; }
+.finder-opt:hover { border-color: var(--accent); background: rgba(46,107,255,.08); transform: translateX(4px); }
+.finder-opt.active { border-color: var(--accent); background: rgba(46,107,255,.12); }
+.finder-input-row { margin-bottom: 16px; }
+.finder-input-row input {
+  width: 100%; padding: 16px 18px; border-radius: 10px;
+  border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
+  font-size: 14.5px; font-family: var(--ff-body); transition: border-color .3s, box-shadow .3s;
+}
+.finder-input-row input:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,107,255,.18);
+}
+.finder-actions { display: flex; justify-content: center; margin-top: 20px; }
+.finder-actions .btn { width: 100%; justify-content: center; }
+.finder-step-back {
+  display: block; margin: 20px auto 0; background: none; border: none; cursor: pointer;
+  color: var(--muted); font-family: var(--ff-body); font-size: 13px; font-weight: 600;
+  text-decoration: underline; touch-action: manipulation;
+}
+.finder-step-back:hover { color: var(--accent-text); }
+.finder-alt { text-align: center; font-size: 13px; color: var(--muted); margin-top: 18px; }
+.finder-alt a { color: var(--accent-text); font-weight: 700; }
+.finder-noscript { color: var(--muted); margin-top: 18px; }
+.finder-optional { font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: normal; }
+
+.finder-select-row select {
+  width: 100%; padding: 16px 18px; border-radius: 10px;
+  border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
+  font-size: 14.5px; font-family: var(--ff-body); transition: border-color .3s, box-shadow .3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center; background-size: 18px;
+}
+.finder-select-row select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,107,255,.18);
+}
+.finder-select-row select option { background: var(--panel); color: var(--text); }
+
+.finder-options-row { flex-direction: row; flex-wrap: wrap; margin-bottom: 16px; }
+.finder-opt-sm { width: auto; flex: 1 1 calc(50% - 5px); justify-content: center; padding: 12px 16px; }
+.finder-opt-sm.active { border-color: var(--accent); background: rgba(46,107,255,.12); color: var(--accent-text); }
+.finder-continue { display: flex; width: 100%; justify-content: center; }
+
+.finder-result-vehicle {
+  font-family: var(--ff-mono); font-size: 12.5px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted); text-align: center;
+}
+.finder-result-grade {
+  font-family: var(--ff-head); font-weight: 700; font-size: clamp(38px, 6vw, 52px);
+  letter-spacing: .02em; text-align: center; margin-top: 4px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.finder-result-note { color: var(--muted); font-size: 13.5px; margin-top: 12px; text-align: center; }
+.finder-result-match {
+  font-family: var(--ff-mono); font-size: 12px; font-weight: 500; letter-spacing: .02em;
+  color: var(--accent-text); margin-top: 16px; text-align: center;
+}
+.finder-result-match:empty { display: none; }
+
+/* ---- result enrichment: viscosity meaning, certification, typical price.
+   Real, sourced, general-market context, not a claim about Motovian's own
+   price (which isn't public yet). ---- */
+.finder-result-facts {
+  margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.finder-result-facts:empty { display: none; }
+.finder-fact { font-size: 13px; color: var(--muted); line-height: 1.55; text-align: center; }
+.finder-fact strong { color: var(--text-light); font-weight: 600; }
+
+@media (max-width: 640px) {
+  .finder-app { padding: 32px 22px; }
+}
+
+/* ---- lineup ---- */
+.lineup-line { margin-top: 60px; }
+.lineup-line:first-of-type { margin-top: 44px; }
+.lineup-line-head { text-align: center; max-width: 480px; margin: 0 auto 26px; }
+.lineup-line-head h3 { color: var(--text); }
+.lineup-line-head p { color: var(--muted); font-size: 14.5px; }
+.moto-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+.moto-card {
+  background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 28px; display: flex; align-items: flex-start; gap: 20px;
+  transition: transform .35s var(--ease), background .35s var(--ease), border-color .35s var(--ease);
+}
+.moto-card:hover { transform: translateY(-6px); background: rgba(255,255,255,.06); border-color: rgba(46,107,255,.35); }
+.moto-card-body { flex: 1; min-width: 0; }
+.drop-lg { width: 44px; height: 54px; flex-shrink: 0; }
+.moto-grade { font-family: var(--ff-head); font-weight: 700; font-size: 24px; color: var(--text-light); }
+.moto-pack { color: var(--muted-light); font-size: 13px; display: block; margin: 2px 0 12px; }
+.moto-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.moto-badge {
+  font-family: var(--ff-mono); font-size: 11px; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--accent-text); background: var(--accent-soft);
+  padding: 5px 10px; border-radius: 100px;
+}
+
+/* ---- dealer CTA ---- */
+.dealer-cta { background: var(--bg-alt); text-align: center; }
+.dealer-cta-sub { color: var(--muted); max-width: 480px; margin: 0 auto 30px; }
+.dealer-cta-contact { flex-direction: row; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
+
+@media (max-width: 640px) {
+  .moto-grid { grid-template-columns: 1fr; }
+  .dealer-cta-contact { flex-direction: column; }
+}

@@ -22,6 +22,7 @@
   --ff-body: "Inter", sans-serif;
   --ff-mono: "JetBrains Mono", monospace;
   --ease: cubic-bezier(.22,.9,.32,1);
+  --topbar-h: 38px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -177,11 +178,45 @@ h3 { font-size: 22px; margin-bottom: 8px; }
 }
 @media (max-width: 1399px) { #scroll-rail { display: none; } }
 
+/* ===================== MOTOVIAN TOP BANNER ===================== */
+/* Fixed above the navbar, only on pages that opt in via body.has-topbar (so
+   pages without this markup keep the navbar flush at top:0, unaffected). A
+   local token override keeps the neon-blue treatment scoped to this strip. */
+.motovian-topbar {
+  --accent: #2E6BFF;
+  --accent-2: #00E0FF;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 501;
+  height: var(--topbar-h);
+  display: flex; align-items: center;
+  background: #0A0B0D;
+  border-bottom: 1px solid rgba(46,107,255,.25);
+  overflow: hidden;
+  text-decoration: none;
+}
+.motovian-topbar-track {
+  display: inline-flex; gap: 50px;
+  white-space: nowrap; padding-left: 24px;
+  animation: marqueeScroll 20s linear infinite;
+}
+.motovian-topbar-track span {
+  display: inline-flex; align-items: center; gap: 50px;
+  font-family: var(--ff-mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase; color: var(--accent-2);
+}
+.motovian-topbar-track span i { color: var(--accent); font-style: normal; font-size: 10px; }
+.motovian-topbar:hover .motovian-topbar-track { animation-play-state: paused; }
+body.has-topbar #navbar { top: var(--topbar-h); }
+body.has-topbar .hero { padding-top: calc(128px + var(--topbar-h)); }
+@media (max-width: 640px) {
+  .motovian-topbar-track span { font-size: 10.5px; gap: 34px; }
+  .motovian-topbar-track { gap: 34px; }
+}
+
 /* ===================== NAVBAR ===================== */
 #navbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 500;
   padding: 22px 0;
-  transition: background .4s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease);
+  transition: background .4s var(--ease), padding .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease), top .3s var(--ease);
 }
 #navbar.scrolled {
   padding: 14px 0;
@@ -653,7 +688,6 @@ h3 { font-size: 22px; margin-bottom: 8px; }
   .part-sample-scroll { max-height: 280px; }
 }
 
-/* ===================== OIL BRAND FEATURE (kept dark for contrast) ===================== */
 /* ===================== MARQUEE ===================== */
 .marquee {
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
@@ -668,37 +702,29 @@ h3 { font-size: 22px; margin-bottom: 8px; }
 .marquee-track span i { color: var(--accent); font-style: normal; font-size: 11px; }
 @keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-.oil-brand { position: relative; overflow: hidden; background: var(--dark); }
-.oil-bg {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 75% 30%, rgba(229,52,42,.28), transparent 55%),
-              radial-gradient(circle at 15% 80%, rgba(255,107,77,.14), transparent 50%);
-}
-.oil-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-.oil-copy h2.oil-brand-name {
-  font-size: clamp(34px, 5vw, 56px);
-  letter-spacing: .04em;
-  background: linear-gradient(90deg, var(--accent-2), var(--accent));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.oil-copy p.light { color: var(--text-light); opacity: .85; }
-.oil-actions { margin-top: 26px; }
-.oil-visual { display: flex; flex-direction: column; gap: 20px; }
-.oil-variant {
-  background: rgba(255,255,255,.05); border: 1px solid var(--line-dark); border-radius: var(--radius);
-  padding: 20px 24px; display: flex; align-items: center; gap: 18px;
-  transition: transform .35s var(--ease), background .35s var(--ease);
-}
-.oil-variant:hover { transform: translateX(8px); background: rgba(255,255,255,.09); }
 .drop {
   width: 34px; height: 42px; flex-shrink: 0;
   background: linear-gradient(160deg, var(--accent-2), var(--accent));
   border-radius: 50% 50% 50% 0; transform: rotate(45deg);
   animation: floatY 5s ease-in-out infinite;
 }
-.oil-variant p { font-weight: 700; font-size: 17px; color: var(--text-light); }
-.oil-variant span { color: var(--muted-light); font-size: 13px; display: block; margin-top: 2px; }
-.oil-footnote { margin-top: 46px; color: var(--muted-light); font-size: 13px; position: relative; z-index: 1; }
+
+/* ===================== HERO: DISCOVER MOTOVIAN (small blended CTA) ===================== */
+/* A third, smaller hero button whose gradient blends Skye's red/orange with
+   Motovian's neon-blue, rather than being either pure color: it's the
+   handoff between the two brands, not a full Motovian takeover. Sits pulled
+   up toward the two main buttons instead of using hero-actions' full
+   bottom margin. Links out to the standalone motovian.html page. */
+.hero-motovian-cta { display: inline-flex; margin-top: -40px; }
+.btn-motovian {
+  background: linear-gradient(90deg, var(--accent) 0%, #2E6BFF 100%);
+  color: #fff8f6;
+  box-shadow: 0 10px 26px rgba(46,107,255,.22), 0 6px 20px rgba(229,52,42,.18);
+}
+.btn-motovian:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 14px 34px rgba(46,107,255,.3), 0 8px 26px rgba(229,52,42,.24);
+}
 
 /* ===================== WHY US ===================== */
 .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin-top: 50px; }
@@ -817,7 +843,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 980px) {
   .section { padding: 85px 0; }
-  .about-grid, .oil-grid, .dealers-grid { grid-template-columns: 1fr; }
+  .about-grid, .dealers-grid { grid-template-columns: 1fr; }
   .about-visual { height: 220px; }
   .about-card { width: 180px; padding: 20px; }
   .card-1 { top: 4%; }
@@ -833,6 +859,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
     box-shadow: -20px 0 50px rgba(32,24,21,.15);
     animation: slideIn .4s var(--ease);
     overflow-y: auto; overscroll-behavior: contain;
+  }
+  body.has-topbar #nav-links.mobile-open {
+    top: var(--topbar-h); height: calc(100vh - var(--topbar-h));
   }
   #nav-links.mobile-open a { padding: 16px 0; border-bottom: 1px solid var(--line); }
 }
@@ -856,5 +885,5 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   }
   html { scroll-behavior: auto; }
   .reveal { opacity: 1; transform: none; }
-  .hero-bg, .shape, .streak, .about-glow, .drop, .wa-pulse, .scroll-cue-arrow, .marquee-track { animation: none !important; }
+  .hero-bg, .shape, .streak, .about-glow, .drop, .wa-pulse, .scroll-cue-arrow, .marquee-track, .motovian-topbar-track { animation: none !important; }
 }
