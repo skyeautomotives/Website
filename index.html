@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=48">
+<link rel="stylesheet" href="css/style.css?v=51">
 </head>
 <body class="has-topbar">
 
@@ -70,28 +70,68 @@
     <span class="shape shape-drop"></span>
     <span class="shape shape-gear"></span>
     <span class="shape shape-ring"></span>
-    <span class="streak" style="top:24%; width:280px; animation-delay:.3s;"></span>
-    <span class="streak" style="top:52%; width:200px; animation-delay:1.4s;"></span>
-    <span class="streak" style="top:74%; width:240px; animation-delay:2.3s;"></span>
+    <!-- Streaks run along the hero's top and bottom edges only: through the
+         middle they cut across the headline and read as strikethrough. -->
+    <span class="streak" style="top:13%; width:280px; animation-delay:.3s;"></span>
+    <span class="streak" style="top:92%; width:240px; animation-delay:2.3s;"></span>
   </div>
-  <div class="hero-content">
-    <p class="tagline reveal">Skye is the Limit</p>
-    <h1 class="hero-title">
-      <span class="line"><span class="line-inner" style="animation-delay:.12s">Parts, Oil and Batteries</span></span>
-      <span class="line"><span class="line-inner text-gradient" style="animation-delay:.3s">You Can Trust</span></span>
-    </h1>
-    <p class="hero-sub reveal">
-      Skye Automotives supplies dealers, mechanics and workshops with genuine parts,
-      oil and batteries, now including our own oil brand, Motovian.
-    </p>
-    <div class="hero-actions reveal">
-      <a href="#dealers" class="btn btn-primary">Become a Dealer</a>
-      <a href="https://wa.me/919744060485" target="_blank" rel="noopener" class="btn btn-outline">
-        <svg viewBox="0 0 24 24" class="icon-wa" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-.9 1.2c-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.1 7c-.1-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.8c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.5-1.2l-.3-.2-3 .8.8-2.9-.2-.3C4 15.1 3.5 13.6 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
-        WhatsApp Us
-      </a>
+  <div class="hero-split">
+    <div class="hero-content">
+      <p class="tagline reveal">Skye is the Limit</p>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner" style="animation-delay:.12s">Parts, Oil and Batteries</span></span>
+        <span class="line"><span class="line-inner text-gradient" style="animation-delay:.3s">You Can Trust</span></span>
+      </h1>
+      <p class="hero-sub reveal">
+        Skye Automotives supplies dealers, mechanics and workshops with genuine parts,
+        oil and batteries, now including our own oil brand, Motovian.
+      </p>
+      <div class="hero-actions reveal">
+        <a href="#dealers" class="btn btn-primary">Become a Dealer</a>
+        <a href="https://wa.me/919744060485" target="_blank" rel="noopener" class="btn btn-outline">
+          <svg viewBox="0 0 24 24" class="icon-wa" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-.9 1.2c-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5C10 9 9.4 7.6 9.1 7c-.1-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.6 1.1 2.8c.1.2 2 3 4.7 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.3-.1-.2-.3-.3-.6-.4z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.1L2 22l5-1.3c1.5.8 3.2 1.3 5 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.3c-1.6 0-3.1-.4-4.5-1.2l-.3-.2-3 .8.8-2.9-.2-.3C4 15.1 3.5 13.6 3.5 12c0-4.7 3.8-8.5 8.5-8.5s8.5 3.8 8.5 8.5-3.8 8.5-8.5 8.5z"/></svg>
+          WhatsApp Us
+        </a>
+      </div>
     </div>
-    <a href="motovian.html" class="btn btn-small btn-motovian hero-motovian-cta reveal">Discover Our Own Brand: Motovian</a>
+
+    <!-- ================= MOTOVIAN SPOTLIGHT ================= -->
+    <!-- Skye's own brand gets the other half of the hero, in Motovian's own
+         dark palette, so it is the first thing seen next to the headline. -->
+    <aside class="moto-spot" aria-labelledby="moto-spot-title">
+      <div class="moto-spot-head">
+        <span class="moto-spot-badge"><i aria-hidden="true"></i>New &middot; Our Own Brand</span>
+        <span class="moto-spot-drop" aria-hidden="true"></span>
+      </div>
+      <h2 class="moto-spot-title" id="moto-spot-title">MOTOVIAN</h2>
+      <p class="moto-spot-sub">
+        Engine oil made by Skye Automotives. BS6 compliant, synthetic technology, exceeding API standards.
+      </p>
+      <ul class="moto-spot-range">
+        <li>
+          <span class="moto-spot-grade">15W-40</span>
+          <span class="moto-spot-name">Motor Oil HDX<small>Cars &amp; commercial vehicles</small></span>
+          <span class="moto-spot-pack">3L</span>
+        </li>
+        <li>
+          <span class="moto-spot-grade">20W-40</span>
+          <span class="moto-spot-name">Motorcycle Oil 4T<small>Motorcycles &amp; three-wheelers</small></span>
+          <span class="moto-spot-pack">1L</span>
+        </li>
+        <li>
+          <span class="moto-spot-grade">10W-30</span>
+          <span class="moto-spot-name">Motorcycle Oil 4T<small>Motorcycles &amp; three-wheelers</small></span>
+          <span class="moto-spot-pack">800ML</span>
+        </li>
+      </ul>
+      <div class="moto-spot-actions">
+        <a href="motovian.html" class="moto-spot-btn">
+          Explore Motovian
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="oil-finder.html" class="moto-spot-link">Find the oil for your vehicle</a>
+      </div>
+    </aside>
   </div>
   <a href="#about" class="scroll-cue" aria-label="Scroll down">
     <span class="scroll-cue-text">Scroll Down</span>
