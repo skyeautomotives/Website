@@ -263,23 +263,29 @@
     "MA2": "for wet-clutch motorcycles, with a higher friction rating for performance or heavy-load riding",
     "MB": "for scooters and bikes without a wet clutch"
   };
+  // Only these three grades have a genuine primary-source price (an OEM's own
+  // official e-commerce store: Hero MotoCorp, Suzuki Motorcycle India): see
+  // research/oil-price-research.md. Every other grade we checked (15W-40,
+  // 15W-50, 20W-50, 10W-50, 5W-30, 5W-40, 0W-20, 0W-16, 0W-30) turned up no
+  // reliable price at all: pure lubricant brands don't publish consumer MRP
+  // on their own India sites, and reseller listings for the same product
+  // varied by 2 to 6x. Rather than show a number we can't stand behind, we
+  // simply omit the price line for those grades.
   const PRICE_FACTS = {
-    "10W-30": "General Indian market range for 10W-30 4T motorcycle oil: roughly ₹250 to ₹550 per litre, depending on brand.",
-    "20W-40": "General Indian market range for 20W-40 motorcycle oil: roughly ₹150 to ₹400 per litre, depending on brand.",
-    "15W-40": "General Indian market range for 15W-40 diesel/car engine oil: roughly ₹200 to ₹400 per litre, depending on brand."
+    "10W-30": "₹565 to ₹600 per litre, based on official OEM store pricing (Hero MotoCorp, Suzuki Motorcycle India).",
+    "20W-40": "₹437 to ₹545 per litre, based on official OEM store pricing (Suzuki Motorcycle India, Hero MotoCorp).",
+    "10W-40": "₹628 to ₹887 per litre, based on official OEM store pricing (Suzuki Motorcycle India), semi-synthetic to full-synthetic."
   };
   const FALLBACK_FACTS = {
     "2-Wheeler": [
-      "Motovian 4T oil comes in two grades, 10W-30 and 20W-40, both rated for motorcycles and scooters.",
-      PRICE_FACTS["10W-30"]
+      { label: "Description", value: "Motovian 4T oil comes in two grades, 10W-30 and 20W-40, both suited to motorcycles and scooters." },
+      { label: "Typical Price", value: PRICE_FACTS["10W-30"] }
     ],
     "4-Wheeler": [
-      "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, suitable for petrol, diesel, LPG and CNG engines.",
-      PRICE_FACTS["15W-40"]
+      { label: "Description", value: "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, suitable for petrol, diesel, LPG and CNG engines." }
     ],
     "Heavy / Commercial": [
-      "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, commonly used in diesel commercial vehicles.",
-      PRICE_FACTS["15W-40"]
+      { label: "Description", value: "Motovian Motor Oil HDX is a 15W-40 synthetic-technology oil, exceeding API CI-4 Plus, commonly used in diesel commercial vehicles." }
     ]
   };
 
@@ -290,31 +296,32 @@
     return "Multigrade oil: flows like a " + m[1] + "-weight oil on a cold start, and like a " + m[2] + "-weight oil once the engine is up to temperature.";
   }
 
-  function certFacts(note) {
-    const facts = [];
+  function categoryFact(note) {
+    const parts = [];
     const apiMatch = (note || "").match(/\bAPI\s+([A-Z]{1,3}-?\d?(?:\s*\/\s*[A-Z]{1,3}-?\d?)*)/);
     if (apiMatch) {
       const codes = apiMatch[1].split("/").map((s) => s.trim());
       const known = codes.filter((c) => API_MEANINGS[c]);
       if (known.length) {
-        facts.push("API " + codes.join(" / ") + ": " + known.map((c) => API_MEANINGS[c]).join("; or "));
+        parts.push("API " + codes.join(" / ") + ": " + known.map((c) => API_MEANINGS[c]).join("; or "));
       }
     }
     const jasoMatch = (note || "").match(/\bJASO\s+(MA2?|MB)(?:\s*\/\s*(MA2?|MB))?/);
     if (jasoMatch) {
       const codes = [jasoMatch[1], jasoMatch[2]].filter(Boolean);
-      facts.push("JASO " + codes.join(" / ") + ": " + codes.map((c) => JASO_MEANINGS[c]).join("; or "));
+      parts.push("JASO " + codes.join(" / ") + ": " + codes.map((c) => JASO_MEANINGS[c]).join("; or "));
     }
-    return facts;
+    return parts.length ? parts.join(". ") + "." : null;
   }
 
   function researchedFacts(entry) {
     const facts = [];
     const visc = viscosityFact(entry.grade);
-    if (visc) facts.push(visc);
-    facts.push(...certFacts(entry.note));
+    if (visc) facts.push({ label: "Description", value: visc });
+    const cat = categoryFact(entry.note);
+    if (cat) facts.push({ label: "Category", value: cat });
     const primary = entry.grade.split("/")[0].trim();
-    if (PRICE_FACTS[primary]) facts.push(PRICE_FACTS[primary]);
+    if (PRICE_FACTS[primary]) facts.push({ label: "Typical Price", value: PRICE_FACTS[primary] });
     return facts;
   }
 
@@ -400,10 +407,17 @@
   function renderFacts(facts) {
     resultFacts.innerHTML = "";
     facts.forEach((f) => {
-      const p = document.createElement("p");
-      p.className = "finder-fact";
-      p.textContent = f;
-      resultFacts.appendChild(p);
+      const row = document.createElement("div");
+      row.className = "finder-fact";
+      const label = document.createElement("p");
+      label.className = "finder-fact-label";
+      label.textContent = f.label;
+      const value = document.createElement("p");
+      value.className = "finder-fact-value";
+      value.textContent = f.value;
+      row.appendChild(label);
+      row.appendChild(value);
+      resultFacts.appendChild(row);
     });
   }
 
