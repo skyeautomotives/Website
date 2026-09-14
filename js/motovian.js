@@ -331,10 +331,12 @@
     model: document.getElementById("finder-step-model"),
     result: document.getElementById("finder-step-result")
   };
-  const companySelect = document.getElementById("finder-company");
+  const progressRail = document.getElementById("finder-progress");
+  const progressSteps = progressRail.querySelectorAll(".finder-progress-step");
+  const companyTiles = document.getElementById("finder-company-tiles");
   const modelLabel = document.getElementById("finder-model-label");
   const modelKnownBox = document.getElementById("finder-model-known");
-  const modelSelect = document.getElementById("finder-model-select");
+  const modelTiles = document.getElementById("finder-model-tiles");
   const modelUnknownBox = document.getElementById("finder-model-unknown");
   const fuelRow = document.getElementById("finder-fuel-row");
   const modelTextInput = document.getElementById("finder-model-text");
@@ -350,22 +352,72 @@
   let answers = { segment: "", company: "", fuel: "", model: "" };
   let researchedEntry = null;
 
+  const STEP_ORDER = ["segment", "company", "model"];
+
+  // The bottom fade is a "there's more below" cue, so drop it once the list
+  // is fully scrolled or short enough not to scroll at all.
+  function syncTileFade(box) {
+    const atEnd = box.scrollTop + box.clientHeight >= box.scrollHeight - 2;
+    box.classList.toggle("is-ended", atEnd);
+  }
+
+  [companyTiles, modelTiles].forEach((box) => {
+    box.addEventListener("scroll", () => syncTileFade(box), { passive: true });
+  });
+
   function showStep(key) {
     Object.values(steps).forEach((el) => {
       el.hidden = true;
     });
     steps[key].hidden = false;
+    // A long tile list must open at the top: a hidden container ignores
+    // scrollTop writes, and the browser can restore a stale offset on reload.
+    steps[key].querySelectorAll(".finder-tiles").forEach((box) => {
+      box.scrollTop = 0;
+      syncTileFade(box);
+    });
+
+    // The rail is a question counter, so it has no place on the answer.
+    progressRail.hidden = key === "result";
+    const at = STEP_ORDER.indexOf(key);
+    progressSteps.forEach((el, i) => {
+      el.classList.toggle("is-current", i === at);
+      el.classList.toggle("is-done", at > -1 && i < at);
+    });
+  }
+
+  // ---- tiles: one tappable target per choice, instead of a dropdown that
+  // hides every option behind a click and leaves the card looking empty. ----
+  function makeTile(label, meta, wide) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "finder-tile" + (wide ? " finder-tile-wide" : "");
+    const name = document.createElement("span");
+    name.className = "finder-tile-name";
+    name.textContent = label;
+    btn.appendChild(name);
+    if (meta) {
+      const sub = document.createElement("span");
+      sub.className = "finder-tile-meta";
+      sub.textContent = meta;
+      btn.appendChild(sub);
+    }
+    return btn;
   }
 
   function populateCompanies(segment) {
-    companySelect.innerHTML = '<option value="">Select company</option>';
+    companyTiles.innerHTML = "";
+    companyTiles.scrollTop = 0;
     (COMPANIES[segment] || []).forEach((name) => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      companySelect.appendChild(opt);
+      const isOther = name === "Other";
+      const tile = makeTile(isOther ? "Another brand" : name, null, isOther);
+      tile.addEventListener("click", () => {
+        answers.company = name;
+        fillModelStep();
+        showStep("model");
+      });
+      companyTiles.appendChild(tile);
     });
-    companySelect.value = "";
   }
 
   function getResearchedModels(segment, company) {
@@ -376,21 +428,24 @@
     const models = getResearchedModels(answers.segment, answers.company);
     fuelRow.hidden = answers.segment === "2-Wheeler";
     if (models.length) {
-      modelLabel.textContent = "Model";
+      modelLabel.textContent = "Which model?";
       modelKnownBox.hidden = false;
       modelUnknownBox.hidden = true;
-      modelSelect.innerHTML = '<option value="">Select model</option>';
-      models.forEach((entry, i) => {
-        const opt = document.createElement("option");
-        opt.value = String(i);
-        opt.textContent = entry.model + " (" + entry.grade + ")";
-        modelSelect.appendChild(opt);
+      modelTiles.innerHTML = "";
+      modelTiles.scrollTop = 0;
+      models.forEach((entry) => {
+        // The grade rides on the tile, so the answer is half-visible before
+        // the visitor even commits to a model.
+        const tile = makeTile(entry.model, entry.grade, false);
+        tile.addEventListener("click", () => {
+          answers.model = entry.model;
+          showResearchedResult(entry);
+        });
+        modelTiles.appendChild(tile);
       });
-      const otherOpt = document.createElement("option");
-      otherOpt.value = "other";
-      otherOpt.textContent = "My model isn't listed";
-      modelSelect.appendChild(otherOpt);
-      modelSelect.value = "";
+      const other = makeTile("My model isn't listed", null, true);
+      other.addEventListener("click", switchToUnknownModel);
+      modelTiles.appendChild(other);
     } else {
       switchToUnknownModel();
     }
@@ -480,25 +535,6 @@
 
   finderBox.querySelectorAll("[data-segment]").forEach((btn) => {
     btn.addEventListener("click", () => selectSegment(btn.dataset.segment));
-  });
-
-  companySelect.addEventListener("change", () => {
-    if (!companySelect.value) return;
-    answers.company = companySelect.value;
-    fillModelStep();
-    showStep("model");
-  });
-
-  modelSelect.addEventListener("change", () => {
-    if (!modelSelect.value) return;
-    if (modelSelect.value === "other") {
-      switchToUnknownModel();
-      return;
-    }
-    const models = getResearchedModels(answers.segment, answers.company);
-    const entry = models[Number(modelSelect.value)];
-    answers.model = entry.model;
-    showResearchedResult(entry);
   });
 
   unknownContinueBtn.addEventListener("click", () => {

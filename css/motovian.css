@@ -116,6 +116,13 @@
 .hero-actions-quiet { margin-top: 22px; }
 
 @media (max-width: 560px) {
+  .finder-app { padding: 30px 20px; }
+  .finder-progress { margin-bottom: 24px; }
+  .finder-progress-step { font-size: 9px; letter-spacing: .08em; }
+  .finder-tiles { gap: 8px; max-height: 50vh; }
+  .finder-tile { padding: 12px 13px; }
+  .finder-tile-name { font-size: 13px; }
+
   .hero-starter { padding: 20px 18px 16px; margin-top: 24px; }
   .hero-starter-chips { flex-direction: column; gap: 8px; }
   .starter-chip { flex-direction: row; justify-content: flex-start; gap: 14px; padding: 13px 16px; text-align: left; }
@@ -166,9 +173,10 @@
 .finder-actions { display: flex; justify-content: center; margin-top: 20px; }
 .finder-actions .btn { width: 100%; justify-content: center; }
 .finder-step-back {
-  display: block; margin: 20px auto 0; background: none; border: none; cursor: pointer;
-  color: var(--muted); font-family: var(--ff-body); font-size: 13px; font-weight: 600;
-  text-decoration: underline; touch-action: manipulation;
+  background: none; border: none; cursor: pointer; padding: 4px 10px;
+  color: var(--muted); font-family: var(--ff-mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .08em; text-transform: uppercase; touch-action: manipulation;
+  transition: color .25s;
 }
 .finder-step-back:hover { color: var(--accent-text); }
 .finder-alt { text-align: center; font-size: 13px; color: var(--muted); margin-top: 18px; }
@@ -176,18 +184,86 @@
 .finder-noscript { color: var(--muted); margin-top: 18px; }
 .finder-optional { font-weight: 400; color: var(--muted); text-transform: none; letter-spacing: normal; }
 
-.finder-select-row select {
-  width: 100%; padding: 16px 18px; border-radius: 10px;
-  border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--text);
-  font-size: 14.5px; font-family: var(--ff-body); transition: border-color .3s, box-shadow .3s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 16px center; background-size: 18px;
+/* ---- progress rail: three numbered nodes joined by a line that fills in
+   as the visitor advances. Gives the card a top edge and a sense of how
+   little is left to do. ---- */
+.finder-progress { display: flex; margin-bottom: 30px; }
+.finder-progress[hidden] { display: none; }
+.finder-progress-step {
+  position: relative; flex: 1;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-family: var(--ff-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); transition: color .35s var(--ease);
 }
-.finder-select-row select:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,107,255,.18);
+.finder-progress-step::before {
+  content: ""; position: absolute; top: 13px; right: 50%; width: 100%; height: 1px;
+  background: var(--line); transition: background .35s var(--ease);
 }
-.finder-select-row select option { background: var(--panel); color: var(--text); }
+.finder-progress-step:first-child::before { display: none; }
+.finder-progress-step i {
+  position: relative; z-index: 1;
+  width: 27px; height: 27px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-style: normal; font-size: 11.5px; font-weight: 600;
+  background: var(--panel); border: 1px solid var(--line); color: var(--muted);
+  transition: border-color .35s var(--ease), background .35s var(--ease),
+              color .35s var(--ease), box-shadow .35s var(--ease);
+}
+.finder-progress-step.is-done { color: var(--text); }
+.finder-progress-step.is-done::before,
+.finder-progress-step.is-current::before { background: var(--accent); }
+.finder-progress-step.is-done i { background: var(--accent); border-color: var(--accent); color: #fff; }
+.finder-progress-step.is-current { color: var(--accent-text); }
+.finder-progress-step.is-current i {
+  border-color: var(--accent); color: var(--accent-text);
+  background: var(--accent-soft); box-shadow: 0 0 0 4px rgba(46,107,255,.13);
+}
+
+/* ---- choice tiles: every option visible and tappable at once, rather than
+   collapsed into a dropdown that leaves the card looking empty. ---- */
+.finder-tiles {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  max-height: 336px; overflow-y: auto;
+  padding: 2px 6px 2px 2px; margin: 0 -2px;
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+  /* Fade the bottom edge so a long list reads as "more below" rather than
+     as a row sliced in half by the card. */
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 28px), transparent);
+}
+.finder-tiles.is-ended {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+.finder-tiles::-webkit-scrollbar { width: 6px; }
+.finder-tiles::-webkit-scrollbar-track { background: transparent; }
+.finder-tiles::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.finder-tiles::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.finder-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 14px 16px; border-radius: 12px;
+  background: rgba(255,255,255,.03); border: 1px solid var(--line); color: var(--text);
+  font-family: var(--ff-body); text-align: left; cursor: pointer;
+  transition: border-color .25s, background .25s, transform .25s var(--ease);
+  touch-action: manipulation;
+}
+.finder-tile-name { font-size: 14px; font-weight: 600; line-height: 1.35; }
+.finder-tile-meta {
+  font-family: var(--ff-mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; color: var(--accent-text);
+}
+.finder-tile:hover { border-color: var(--accent); background: rgba(46,107,255,.1); transform: translateY(-2px); }
+.finder-tile:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(46,107,255,.18); }
+.finder-tile-wide { grid-column: 1 / -1; align-items: center; }
+.finder-tile-wide .finder-tile-name { font-weight: 500; color: var(--muted); font-size: 13px; }
+.finder-tile-wide:hover .finder-tile-name { color: var(--text); }
+
+.finder-step-foot {
+  display: flex; justify-content: center;
+  margin-top: 22px; padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
 
 .finder-options-row { flex-direction: row; flex-wrap: wrap; margin-bottom: 16px; }
 .finder-opt-sm { width: auto; flex: 1 1 calc(50% - 5px); justify-content: center; padding: 12px 16px; }

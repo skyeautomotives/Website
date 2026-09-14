@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=47">
-<link rel="stylesheet" href="css/motovian.css?v=12">
+<link rel="stylesheet" href="css/motovian.css?v=14">
 <link rel="stylesheet" href="css/oil-finder.css?v=2">
 </head>
 <body>
@@ -46,10 +46,18 @@
 
   <div class="finder-bezel">
     <div class="finder-app" id="finder-box">
+      <!-- One rail for all three questions, so the card always shows where
+           the visitor is and how much is left. Hidden on the result step. -->
+      <div class="finder-progress" id="finder-progress">
+        <span class="finder-progress-step" data-step="segment"><i>1</i>Vehicle</span>
+        <span class="finder-progress-step" data-step="company"><i>2</i>Brand</span>
+        <span class="finder-progress-step" data-step="model"><i>3</i>Model</span>
+      </div>
+
       <!-- Sequential steps: each one replaces the last, so only the current
            question (and finally, only the answer) is ever on screen. -->
       <div class="finder-step" id="finder-step-segment">
-        <p class="finder-field-label center">Vehicle type</p>
+        <p class="finder-field-label center">What are you running?</p>
         <div class="finder-options">
           <button type="button" class="finder-opt" data-segment="2-Wheeler">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M5.5 17.5 9 10h6l3.5 7.5M9 10 7 6h3"/></svg>
@@ -67,24 +75,18 @@
       </div>
 
       <div class="finder-step" id="finder-step-company" hidden>
-        <p class="finder-field-label center">Company</p>
-        <div class="finder-select-row">
-          <select id="finder-company">
-            <option value="">Select company</option>
-          </select>
+        <p class="finder-field-label center">Who makes it?</p>
+        <div class="finder-tiles" id="finder-company-tiles"></div>
+        <div class="finder-step-foot">
+          <button type="button" class="finder-step-back" data-back="segment">&larr; Back</button>
         </div>
-        <button type="button" class="finder-step-back" data-back="segment">&larr; Back</button>
       </div>
 
       <div class="finder-step" id="finder-step-model" hidden>
-        <p class="finder-field-label center" id="finder-model-label">Model</p>
+        <p class="finder-field-label center" id="finder-model-label">Which model?</p>
 
         <div id="finder-model-known">
-          <div class="finder-select-row">
-            <select id="finder-model-select">
-              <option value="">Select model</option>
-            </select>
-          </div>
+          <div class="finder-tiles" id="finder-model-tiles"></div>
         </div>
 
         <div id="finder-model-unknown" hidden>
@@ -100,7 +102,9 @@
           <button type="button" class="btn btn-outline-light btn-small finder-continue" id="finder-unknown-continue">See Result</button>
         </div>
 
-        <button type="button" class="finder-step-back" data-back="company">&larr; Back</button>
+        <div class="finder-step-foot">
+          <button type="button" class="finder-step-back" data-back="company">&larr; Back</button>
+        </div>
       </div>
 
       <div class="finder-step finder-step-result" id="finder-step-result" hidden>
@@ -138,6 +142,6 @@
   </noscript>
 </main>
 
-<script src="js/motovian.js?v=12"></script>
+<script src="js/motovian.js?v=15"></script>
 </body>
 </html>
