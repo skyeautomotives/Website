@@ -63,6 +63,66 @@
 }
 .nav-parent-link:hover { color: var(--accent); }
 
+/* ---- hero starter: the Oil Finder's first question, asked right in the
+   hero. A visitor who taps a chip has already answered step one, so the
+   finder opens on step two rather than on a cold empty form. ---- */
+.hero-starter {
+  max-width: 620px;
+  margin: 30px auto 0;
+  padding: 24px 26px 20px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.09);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.hero-starter-q {
+  font-family: var(--ff-head);
+  font-size: clamp(19px, 2.4vw, 24px);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
+  text-align: center;
+  margin-bottom: 18px;
+}
+.hero-starter-chips { display: flex; gap: 10px; }
+.starter-chip {
+  flex: 1 1 0;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 16px 10px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  color: var(--text);
+  font-family: var(--ff-body); font-size: 13.5px; font-weight: 600;
+  text-align: center; text-decoration: none;
+  transition: border-color .25s, background .25s, transform .25s var(--ease);
+}
+.starter-chip svg {
+  width: 30px; height: 30px;
+  stroke: var(--accent); fill: none; stroke-width: 1.5;
+  transition: stroke .25s;
+}
+.starter-chip:hover {
+  border-color: var(--accent);
+  background: rgba(46,107,255,.1);
+  transform: translateY(-4px);
+}
+.starter-chip:hover svg { stroke: var(--accent-2); }
+.hero-starter-meta {
+  font-size: 12.5px; line-height: 1.6; color: var(--muted);
+  text-align: center; margin: 16px 0 0;
+}
+.hero-actions-quiet { margin-top: 22px; }
+
+@media (max-width: 560px) {
+  .hero-starter { padding: 20px 18px 16px; margin-top: 24px; }
+  .hero-starter-chips { flex-direction: column; gap: 8px; }
+  .starter-chip { flex-direction: row; justify-content: flex-start; gap: 14px; padding: 13px 16px; text-align: left; }
+  .starter-chip svg { width: 24px; height: 24px; }
+  .starter-chip:hover { transform: translateX(4px); }
+}
+
 /* ---- oil finder: sequential single-card steps. Each step replaces the
    last (only the current question is ever visible), ending in one rich
    result screen with no filters left on show. Page shell (header,

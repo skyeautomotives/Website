@@ -466,16 +466,20 @@
     showStep("segment");
   }
 
-  finderBox.querySelectorAll("[data-segment]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      answers.segment = btn.dataset.segment;
-      answers.company = "";
-      answers.fuel = "";
-      answers.model = "";
-      finderBox.querySelectorAll("[data-segment]").forEach((b) => b.classList.toggle("active", b === btn));
-      populateCompanies(answers.segment);
-      showStep("company");
+  function selectSegment(segment) {
+    answers.segment = segment;
+    answers.company = "";
+    answers.fuel = "";
+    answers.model = "";
+    finderBox.querySelectorAll("[data-segment]").forEach((b) => {
+      b.classList.toggle("active", b.dataset.segment === segment);
     });
+    populateCompanies(segment);
+    showStep("company");
+  }
+
+  finderBox.querySelectorAll("[data-segment]").forEach((btn) => {
+    btn.addEventListener("click", () => selectSegment(btn.dataset.segment));
   });
 
   companySelect.addEventListener("change", () => {
@@ -514,4 +518,15 @@
   });
 
   resetBtn.addEventListener("click", resetFinder);
+
+  // ---- deep link from the Motovian hero: the visitor already answered
+  // "what do you drive?" there, so skip straight past the first question
+  // instead of asking it again. Unknown slugs just fall through to step 1. ----
+  const SEGMENT_SLUGS = {
+    "2w": "2-Wheeler",
+    "4w": "4-Wheeler",
+    "hcv": "Heavy / Commercial"
+  };
+  const deepLinked = SEGMENT_SLUGS[new URLSearchParams(window.location.search).get("v")];
+  if (deepLinked) selectSegment(deepLinked);
 })();
